@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Todo } from "../models/todo.model";
-import styled from "styled-components";
+import { Todo } from "../../models/todo.model";
+import { TodoItemContainer } from "./TodoItem.styles";
 
 interface Props {
   todo: Todo;
@@ -8,61 +8,6 @@ interface Props {
   onToggle: (id: string) => void;
   onEdit: (id: string, newTitle: string) => void;
 }
-
-const TodoItemContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: lightgoldenrodyellow;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-
-  input[type="checkbox"] {
-    margin-right: 10px;
-  }
-
-  button {
-    margin-left: 5px;
-    border: none;
-    padding: 5px 8px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: 0.3s;
-  }
-
-  .edit {
-    background: #ffc107;
-    color: white;
-    &:hover {
-      background: #d39e00;
-    }
-  }
-
-  .delete {
-    background: #dc3545;
-    color: white;
-    &:hover {
-      background: #a71d2a;
-    }
-  }
-
-  .save {
-    background: #28a745;
-    color: white;
-    &:hover {
-      background: #1e7e34;
-    }
-  }
-
-  .cancel {
-    background: gray;
-    color: white;
-    &:hover {
-      background: darkgray;
-    }
-  }
-`;
 
 const TodoItem: React.FC<Props> = ({ todo, onDelete, onToggle, onEdit }) => {
   const [isEditing, setIsEditing] = useState(false);

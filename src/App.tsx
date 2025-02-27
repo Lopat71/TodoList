@@ -1,66 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Todo } from "./models/todo.model";
-import TodoList from "./components/TodoList";
-import TodoCounter from "./components/TodoCounter";
-import TodoForm from "./components/TodoForm";
-import styled from "styled-components";
+import TodoList from "./components/TodoList/TodoList";
+import TodoCounter from "./components/TodoCounter/TodoCounter";
+import TodoForm from "./components/TodoForm/TodoForm";
 import GlobalStyles from "./styles/GlobalStyles";
+import { Container, FilterButtons } from "./components/App/App.styles";
 
-const Container = styled.div`
-  background: lawngreen;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-`;
+enum Filter {
+  All = "all",
+  Active = "active",
+  Completed = "completed",
+}
 
-const FilterButtons = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 20px;
+const getTodosFromLocalStorage = (): Todo[] => {
+  const savedTodos = localStorage.getItem("todos");
+  return savedTodos ? JSON.parse(savedTodos) : [];
+};
 
-  button {
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 16px;
-    background-color: #f0e68c;
-    color: #333;
-    border-radius: 8px;
-    transition:
-      background-color 0.3s ease,
-      transform 0.2s ease;
-
-    &:hover {
-      background-color: #ffd700;
-      transform: scale(1.05);
-    }
-
-    &:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.4);
-    }
-
-    &.active {
-      background-color: #ffd700;
-      color: white;
-      font-weight: bold;
-    }
-  }
-`;
+const saveTodosToLocalStorage = (todos: Todo[]): void => {
+  localStorage.setItem("todos", JSON.stringify(todos));
+};
 
 const App: React.FC = () => {
-  const [todos, setTodos] = useState<Todo[]>(() => {
-    const savedTodos = localStorage.getItem("todos");
-    return savedTodos ? JSON.parse(savedTodos) : [];
-  });
-
-  const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+  const [todos, setTodos] = useState<Todo[]>(getTodosFromLocalStorage);
+  const [filter, setFilter] = useState<Filter>(Filter.All);
 
   useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos));
+    saveTodosToLocalStorage(todos);
   }, [todos]);
 
   const addTodo = (title: string) => {
@@ -88,8 +55,8 @@ const App: React.FC = () => {
   };
 
   const filteredTodos = todos.filter((todo) => {
-    if (filter === "active") return !todo.completed;
-    if (filter === "completed") return todo.completed;
+    if (filter === Filter.Active) return !todo.completed;
+    if (filter === Filter.Completed) return todo.completed;
     return true;
   });
 
@@ -103,20 +70,20 @@ const App: React.FC = () => {
 
         <FilterButtons>
           <button
-            className={filter === "all" ? "active" : ""}
-            onClick={() => setFilter("all")}
+            className={filter === Filter.All ? "active" : ""}
+            onClick={() => setFilter(Filter.All)}
           >
             Show All
           </button>
           <button
-            className={filter === "active" ? "active" : ""}
-            onClick={() => setFilter("active")}
+            className={filter === Filter.Active ? "active" : ""}
+            onClick={() => setFilter(Filter.Active)}
           >
             Show Active
           </button>
           <button
-            className={filter === "completed" ? "active" : ""}
-            onClick={() => setFilter("completed")}
+            className={filter === Filter.Completed ? "active" : ""}
+            onClick={() => setFilter(Filter.Completed)}
           >
             Show Completed
           </button>
